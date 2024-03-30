@@ -114,8 +114,34 @@ function getCounters(cards) {
 }
 
 
-function check3k(list) {
+function check3k(counters) {
+    var firstNonZeroIndex = -1;
+    var firstNonZeroValue = -1;
 
+    // Find the first non-zero value and its index
+    for (var i = 0; i < counters.length; i++) {
+        for (var j = 0; j < counters[i].length; j++) {
+            if (counters[i][j] !== 0) {
+                firstNonZeroIndex = i;
+                firstNonZeroValue = counters[i][j];
+                break;
+            }
+        }
+        if (firstNonZeroIndex !== -1) {
+            break;
+        }
+    }
+
+    // Output the result based on the first non-zero value
+    if (firstNonZeroValue === 1) {
+        console.log("這張牌是一張順子的第一張牌。");
+    } else if (firstNonZeroValue === 2) {
+        console.log("這張牌是兩張相同順子的第一張牌。");
+    } else if (firstNonZeroValue === 3) {
+        console.log("這張牌是三張相同順子的第一張牌，或者是一張順子加上一對子，或者是一副刻子。");
+    } else if (firstNonZeroValue === 4) {
+        console.log("這張牌是四張相同順子的第一張牌，或者是一張順子加上一副刻子。");
+    }
 }
 
 
@@ -156,6 +182,7 @@ function tanyao(cDict) {
         }
         
         let counters = getCounters(list['origin']);
+        check3k(counters);
     }
     return {'name':'立直', 'yaku':1} 
 }
