@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <title>麻將</title>
+    <meta charset="utf-8">
+    <style>
+      * {
+      font-family: "Noto Serif TC", serif;
+      font-weight: 400;
+      font-style: normal;
+      }
+      html, body {
+      margin: 0;
+      padding: 0;
+      }
+      article {
+      width: 210mm;
+      margin: 0 auto;
+      }
+      div img {
+        width: 3em;
+        cursor: pointer;
+      }
+      div.disabled {
+        cursor: not-allowed;
+        opacity: .5;
+      }
+      .switchDiv {
+        display: flex;
+        align-items: center;
+      }
+      .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+      }
+      .switch input { 
+      opacity: 0;
+      width: 0;
+      height: 0;
+      }
+      .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+      }
+      .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+      }
+      input:checked + .slider {
+      background-color: #2196F3;
+      }
+      input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+      }
+      input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+      }
+      /* Rounded sliders */
+      .slider.round {
+      border-radius: 34px;
+      }
+      .slider.round:before {
+      border-radius: 50%;
+      }
+      .box {
+        align-items: flex-start;
+        border: 2px dashed grey;
+        padding: 0.2rem;
+        min-height: 6.5rem;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    </style>
+  </head>
+  <body>
+    <article>
+      <table class="top">
+      <table id="pai-table" class="nospace">
+        <tr>
+          <td>
+            <div data-seq="1m"></div>
+          </td>
+          <td>
+            <div data-seq="2m"></div>
+          </td>
+          <td>
+            <div data-seq="3m"></div>
+          </td>
+          <td>
+            <div data-seq="4m"></div>
+          </td>
+          <td>
+            <div data-seq="5m"></div>
+          </td>
+          <td>
+            <div data-seq="6m"></div>
+          </td>
+          <td>
+            <div data-seq="7m"></div>
+          </td>
+          <td>
+            <div data-seq="8m"></div>
+          </td>
+          <td>
+            <div data-seq="9m"></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div data-seq="1s"></div>
+          </td>
+          <td>
+            <div data-seq="2s"></div>
+          </td>
+          <td>
+            <div data-seq="3s"></div>
+          </td>
+          <td>
+            <div data-seq="4s"></div>
+          </td>
+          <td>
+            <div data-seq="5s"></div>
+          </td>
+          <td>
+            <div data-seq="6s"></div>
+          </td>
+          <td>
+            <div data-seq="7s"></div>
+          </td>
+          <td>
+            <div data-seq="8s"></div>
+          </td>
+          <td>
+            <div data-seq="9s"></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div data-seq="1p"></div>
+          </td>
+          <td>
+            <div data-seq="2p"></div>
+          </td>
+          <td>
+            <div data-seq="3p"></div>
+          </td>
+          <td>
+            <div data-seq="4p"></div>
+          </td>
+          <td>
+            <div data-seq="5p"></div>
+          </td>
+          <td>
+            <div data-seq="6p"></div>
+          </td>
+          <td>
+            <div data-seq="7p"></div>
+          </td>
+          <td>
+            <div data-seq="8p"></div>
+          </td>
+          <td>
+            <div data-seq="9p"></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div data-seq="1z"></div>
+          </td>
+          <td>
+            <div data-seq="2z"></div>
+          </td>
+          <td>
+            <div data-seq="3z"></div>
+          </td>
+          <td>
+            <div data-seq="4z"></div>
+          </td>
+          <td>
+            <div data-seq="5z"></div>
+          </td>
+          <td>
+            <div data-seq="6z"></div>
+          </td>
+          <td>
+            <div data-seq="7z"></div>
+          </td>
+        </tr>
+      </table>
+      <p class="switchDiv">
+        手牌&emsp;
+        <label class="switch">
+        <input type="checkbox" name="switch">
+        <span class="slider round"></span>
+        </label>
+        &emsp;副露
+      </p>
+      <p>手牌最後一張為聽牌</p>
+      <div class="box">
+        <div id="hand" data-seq="000000000000z"></div>
+        <div id="furo"></div>
+      </div>
+    </article>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="Mahjong.js"></script>
+    <script src="point.js"></script>
+    <script>
+      $(document).ready(function(){
+        handList = [];
+        furoList = [];
+        let mahjong = new Mahjong({'handList':handList, 'furoList':furoList});
+
+        function makeBoxCards() {
+          $('#hand').html('');
+          let othetCard = '';
+          let num = handList.length + furoList.length;
+          if (num < 12) {
+            othetCard = '0'.repeat(12 - num);
+            othetCard += 'z';
+          }
+          makeCards($('#hand'), handList.join('') + othetCard);
+          $('#furo').html('');
+          makeCards($('#furo'), furoList.join(''));
+          if (furoList) {
+            $('#furo').css('margin-left', '2em');
+          } else {
+            $('#furo').css('margin-left', '0');
+          }
+
+          mahjong.handList = handList;
+          mahjong.furoList = furoList;
+          mahjong.yakuHai();
+        }
+
+        $(document).on('click', 'td [data-seq]', function() {
+          let $this = $(this);
+
+          card = $this.data('seq');
+          if ($('[data-face="'+card+'"]').length >= 5){
+            return false;
+          }
+
+          /*if ($('.box [data-face]:not([data-face="0z"])').length >= 12){
+            return false;
+          }*/
+
+          if ($('input[name="switch"]').prop("checked")) {
+            furoList.push(card);
+          } else {
+            handList.push(card);
+          }
+
+          makeBoxCards();
+
+          if ($('[data-face="'+card+'"]').length == 5) {
+            $('td [data-seq="'+card+'"]').addClass('disabled');
+          }
+        });
+
+        $(document).on('click', '.box img', function() {
+          let $this = $(this);
+          face = $this.data('face');
+
+          if ($('[data-face="'+face+'"]').length == 5){
+            $('td [data-seq="'+face+'"]').removeClass('disabled');
+          }
+
+          function reObj(arr, ele) {
+            var index = arr.indexOf(ele); // 找到要刪除元素的索引
+            if (index !== -1) {
+                arr.splice(index, 1); // 從陣列中刪除該元素
+            }
+          }
+
+          if ($this.parent().attr('id') == 'hand') {
+            reObj(handList, face);
+          } else {
+            reObj(furoList, face);
+          }
+
+          makeBoxCards();
+        });
+      });
+    </script>
+  </body>
+</html>

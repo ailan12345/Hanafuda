@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+    <title>題目抽抽</title>
+    <meta charset="utf-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&family=Noto+Serif+TC:wght@200;300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: "Noto Serif TC", serif;
+            font-weight: 400;
+            font-style: normal;
+            letter-spacing: 1px;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        section {
+            margin: 1em auto;
+            width: fit-content;
+        }
+        #randomItem {
+            margin: 0 auto;
+            width: fit-content;
+            min-height: 8em;
+        }
+        section > p {
+            text-align: right;
+        }
+        section button {
+            padding: 0.3em 1em;
+            background: #2196F3;
+            border: none;
+            border-radius: 5px;
+            color: #FFF;
+            cursor: pointer;
+        }
+    </style>
+
+<body>
+    <section>
+        <div id="randomItem"></div>
+        <p><button type="button">抽題</button></p>
+    </section>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script>
+        let questions = [
+            {
+                "num": "100",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c039",
+                "name": "c039.&nbsp;00100 – The 3n + 1 problem",
+                "q": "https://yuihuang.com/zj-c039/"
+            },
+            {
+                "num": "118",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c082",
+                "name": "c082.&nbsp;00118 – Mutant Flatworld Expolrers",
+                "q": "https://yuihuang.com/zj-c082/"
+            },
+            {
+                "num": "272",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c007",
+                "name": "c007.&nbsp;00272 – TeX Quotes",
+                "q": "https://yuihuang.com/zj-c007/"
+            },
+            {
+                "num": "299",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e561",
+                "name": "e561.&nbsp;00299 – Train Swapping",
+                "q": "https://yuihuang.com/zj-e561/"
+            },
+            {
+                "num": "490",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c045",
+                "name": "c045.&nbsp;00490 – Rotating Sentences",
+                "q": "https://yuihuang.com/zj-c045/"
+            },
+            {
+                "num": "948",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a134",
+                "name": "a134.&nbsp;00948 – Fibonaccimal Base",
+                "q": "https://yuihuang.com/zj-a134/"
+            },
+            {
+                "num": "10008",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c044",
+                "name": "c044.&nbsp;10008 – What’s Cryptanalysis",
+                "q": "https://yuihuang.com/zj-c044/"
+            },
+            {
+                "num": "10019",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e545",
+                "name": "e545.&nbsp;10019 – Funny Encryption Method",
+                "q": "https://yuihuang.com/zj-e545/"
+            },
+            {
+                "num": "10035",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c014",
+                "name": "c014.&nbsp;10035 – Primary Arithmetic",
+                "q": "https://yuihuang.com/zj-c014/"
+            },
+            {
+                "num": "10038",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d097",
+                "name": "d097.&nbsp;10038 – Jolly Jumpers",
+                "q": "https://yuihuang.com/zj-d097/"
+            },
+            {
+                "num": "10041",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a737",
+                "name": "a737.&nbsp;10041 – Vito’s family",
+                "q": "https://yuihuang.com/zj-a737/"
+            },
+            {
+                "num": "10050",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e579",
+                "name": "e579.&nbsp;10050 – Hartals",
+                "q": "https://yuihuang.com/zj-e579/"
+            },
+            {
+                "num": "10055",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a012",
+                "name": "a012.&nbsp;10055 – Hashmat the Brave Warrior",
+                "q": "https://yuihuang.com/zj-a012/"
+            },
+            {
+                "num": "10056",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e510",
+                "name": "e510.&nbsp;10056 – What is the Probability?&nbsp;",
+                "q": "https://yuihuang.com/zj-e510/"
+            },
+            {
+                "num": "10057",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e606",
+                "name": "e606.&nbsp;10057 – A mid-summer nights dream",
+                "q": "https://yuihuang.com/zj-e606/"
+            },
+            {
+                "num": "10062",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c012",
+                "name": "c012.&nbsp;10062 – Tell me the frequencies!&nbsp;",
+                "q": "https://yuihuang.com/zj-c012/"
+            },
+            {
+                "num": "10071",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d226",
+                "name": "d226.&nbsp;10071 – Back to High School Physics",
+                "q": "https://yuihuang.com/zj-d226/"
+            },
+            {
+                "num": "10093",
+                "type": "必考",
+                "url": "https://vjudge.net/problem/UVA-10093",
+                "name": "UVA-10093&nbsp;An Easy Problem!",
+                "q": "https://yuihuang.com/uva-10093/"
+            },
+            {
+                "num": "10101",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a741",
+                "name": "a741.&nbsp;10101 – Bangla Numbers",
+                "q": "https://yuihuang.com/zj-a741/"
+            },
+            {
+                "num": "10170",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e555",
+                "name": "e555.&nbsp;10170 – The Hotel with Infinite Rooms",
+                "q": "https://yuihuang.com/zj-e555/"
+            },
+            {
+                "num": "10189",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e605",
+                "name": "e605.&nbsp;10189 – Minesweeper",
+                "q": "https://yuihuang.com/zj-e605/"
+            },
+            {
+                "num": "10190",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e566",
+                "name": "e566.&nbsp;10190 – Divide, But Not Quite Conquer!",
+                "q": "https://yuihuang.com/zj-e566/"
+            },
+            {
+                "num": "10193",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d306",
+                "name": "d306.&nbsp;10193 – All You Need Is Love",
+                "q": "https://yuihuang.com/zj-d306/"
+            },
+            {
+                "num": "10221",
+                "type": "必考",
+                "url": "https://vjudge.net/problem/UVA-10221",
+                "name": "UVA-10221&nbsp;Satellites",
+                "q": "https://yuihuang.com/uva-10221/"
+            },
+            {
+                "num": "10222",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e578",
+                "name": "e578.&nbsp;10222 – Decode the Mad man",
+                "q": "https://yuihuang.com/zj-e578/"
+            },
+            {
+                "num": "10226",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d492",
+                "name": "d492.&nbsp;10226 – Hardwood species",
+                "q": "https://yuihuang.com/zj-d492/"
+            },
+            {
+                "num": "10235",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d387",
+                "name": "d387.&nbsp;10235 – Simply Emirp",
+                "q": "https://yuihuang.com/zj-d387/"
+            },
+            {
+                "num": "10242",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e512",
+                "name": "e512.&nbsp;10242 – Fourth Point!!",
+                "q": "https://yuihuang.com/zj-e512/"
+            },
+            {
+                "num": "10252",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e507",
+                "name": "e507.&nbsp;10252 – Common Permutation",
+                "q": "https://yuihuang.com/zj-e507/"
+            },
+            {
+                "num": "10268",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=f444",
+                "name": "f444:&nbsp;10268 – 498-bis",
+                "q": "https://yuihuang.com/uva-10268/"
+            },
+            {
+                "num": "10409",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e516",
+                "name": "e516.&nbsp;10409 – Die Game",
+                "q": "https://yuihuang.com/zj-e516/"
+            },
+            {
+                "num": "10415",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e531",
+                "name": "e531.&nbsp;10415 – Eb Alto Saxophone Player",
+                "q": "https://yuihuang.com/zj-e531/"
+            },
+            {
+                "num": "10420",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a743",
+                "name": "a743.&nbsp;10420 – List of Conquests",
+                "q": "https://yuihuang.com/zj-a743/"
+            },
+            {
+                "num": "10642",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=i859",
+                "name": "i859:&nbsp;10642 – Can You Solve It?",
+                "q": "https://yuihuang.com/zj-i859/"
+            },
+            {
+                "num": "10783",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c022",
+                "name": "c022.&nbsp;10783 – Odd Sum",
+                "q": "https://yuihuang.com/zj-c022/"
+            },
+            {
+                "num": "10812",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c004",
+                "name": "c004.&nbsp;10812 – Beat the Spread!&nbsp;",
+                "q": "https://yuihuang.com/zj-c004/"
+            },
+            {
+                "num": "10908",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e575",
+                "name": "e575.&nbsp;10908 – Largest Squares",
+                "q": "https://yuihuang.com/zj-e575/"
+            },
+            {
+                "num": "10922",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d672",
+                "name": "d672.&nbsp;10922 – 2 the 9s",
+                "q": "https://yuihuang.com/zj-d672/"
+            },
+            {
+                "num": "10929",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d235",
+                "name": "d235.&nbsp;10929 – You can say 11",
+                "q": "https://yuihuang.com/zj-d235/"
+            },
+            {
+                "num": "10931",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a132",
+                "name": "a132.&nbsp;10931 – Parity",
+                "q": "https://yuihuang.com/zj-a132/"
+            },
+            {
+                "num": "11005",
+                "type": "必考",
+                "url": "https://vjudge.net/problem/UVA-11005",
+                "name": "UVA-11005&nbsp;Cheapest Base",
+                "q": "https://yuihuang.com/uva-11005/"
+            },
+            {
+                "num": "11063",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d123",
+                "name": "d123.&nbsp;11063 – B2-Sequence",
+                "q": "https://yuihuang.com/zj-d123/"
+            },
+            {
+                "num": "11150",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d189",
+                "name": "d189.&nbsp;11150 – Cola",
+                "q": "https://yuihuang.com/zj-d189/"
+            },
+            {
+                "num": "11321",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d750",
+                "name": "d750.&nbsp;11321 – Sort! Sort!! and Sort!!!",
+                "q": "https://yuihuang.com/zj-d750/"
+            },
+            {
+                "num": "11332",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c813",
+                "name": "c813.&nbsp;11332 – Summing Digits",
+                "q": "https://yuihuang.com/zj-c813/"
+            },
+            {
+                "num": "11349",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e513",
+                "name": "e513.&nbsp;11349 – Symmetric Matrix",
+                "q": "https://yuihuang.com/zj-e513/"
+            },
+            {
+                "num": "11417",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d255",
+                "name": "d255.&nbsp;11417 – GCD",
+                "q": "https://yuihuang.com/zj-d255/"
+            },
+            {
+                "num": "11461",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d186",
+                "name": "d186.&nbsp;11461 – Square Numbers",
+                "q": "https://yuihuang.com/zj-d186/"
+            },
+            {
+                "num": "12019",
+                "type": "必考",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=f709",
+                "name": "f709:&nbsp;12019 – Doom’s Day Algorithm",
+                "q": "https://yuihuang.com/uva-12019/"
+            },
+            {
+                "num": "105",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d424",
+                "name": "d424.&nbsp;00105 – The Skyline Problem",
+                "q": "https://yuihuang.com/zj-d424/"
+            },
+            {
+                "num": "108",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d206",
+                "name": "d206.&nbsp;00108 – Maximum Sum",
+                "q": "https://yuihuang.com/zj-d206/"
+            },
+            {
+                "num": "136",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d129",
+                "name": "d129.&nbsp;00136 – Ugly Numbers",
+                "q": "https://yuihuang.com/zj-d129/"
+            },
+            {
+                "num": "141",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-141",
+                "name": "UVA-141&nbsp;The Spot Game"
+            },
+            {
+                "num": "145",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d089",
+                "name": "d089.&nbsp;00145 – Gondwanaland Telecom",
+                "q": "https://yuihuang.com/zj-d089/"
+            },
+            {
+                "num": "256",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d182",
+                "name": "d182.&nbsp;00256 – Quirksome Squares",
+                "q": "https://yuihuang.com/zj-d182/"
+            },
+            {
+                "num": "264",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c031",
+                "name": "c031.&nbsp;00264 – Count on Cantor",
+                "q": "https://yuihuang.com/zj-c031/"
+            },
+            {
+                "num": "305",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c108",
+                "name": "c108.&nbsp;00305 – Joseph",
+                "q": "https://yuihuang.com/zj-c108/"
+            },
+            {
+                "num": "382",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c032",
+                "name": "c032.&nbsp;00382 – Perfection",
+                "q": "https://yuihuang.com/zj-c032/"
+            },
+            {
+                "num": "401",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e543",
+                "name": "e543.&nbsp;00401 – Palindromes",
+                "q": "https://yuihuang.com/zj-e543/"
+            },
+            {
+                "num": "409",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c114",
+                "name": "c114.&nbsp;00409 – Excuses, Excuses!",
+                "q": "https://yuihuang.com/zj-c114/"
+            },
+            {
+                "num": "455",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e537",
+                "name": "e537.&nbsp;00455 – Periodic Strings",
+                "q": "https://yuihuang.com/zj-e537/"
+            },
+            {
+                "num": "476",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d091",
+                "name": "d091.&nbsp;00476 – Points in Figures: Rectangles",
+                "q": "https://yuihuang.com/zj-d091/"
+            },
+            {
+                "num": "482",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e529",
+                "name": "e529.&nbsp;00482 – Permutation Arrays",
+                "q": "https://yuihuang.com/zj-e529/"
+            },
+            {
+                "num": "494",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a011",
+                "name": "a011.&nbsp;00494 – Kindergarten Counting Game",
+                "q": "https://yuihuang.com/zj-a011/"
+            },
+            {
+                "num": "496",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d691",
+                "name": "d691.&nbsp;00496 – Simply Subsets",
+                "q": "https://yuihuang.com/zj-d691/"
+            },
+            {
+                "num": "499",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e503",
+                "name": "e503.&nbsp;00499 – What’s The Frequency, Kenneth?",
+                "q": "https://yuihuang.com/zj-e503/"
+            },
+            {
+                "num": "579",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d095",
+                "name": "d095.&nbsp;00579 – ClockHands",
+                "q": "https://yuihuang.com/zj-d095/"
+            },
+            {
+                "num": "591",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c067",
+                "name": "c067.&nbsp;00591 – Box of Bricks",
+                "q": "https://yuihuang.com/zj-c067/"
+            },
+            {
+                "num": "630",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e608",
+                "name": "e608.&nbsp;00630 – Anagrams (II)",
+                "q": "https://yuihuang.com/zj-e608/"
+            },
+            {
+                "num": "706",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c135",
+                "name": "c135.&nbsp;00706 – LC-Display",
+                "q": "https://yuihuang.com/zj-c135/"
+            },
+            {
+                "num": "737",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e549",
+                "name": "e549.&nbsp;00737 – Gleaming the Cubes",
+                "q": "https://yuihuang.com/zj-e549/"
+            },
+            {
+                "num": "763",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d666",
+                "name": "d666.&nbsp;00763 – Fibonacci numbers",
+                "q": "https://yuihuang.com/zj-d666/"
+            },
+            {
+                "num": "865",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e501",
+                "name": "e501.&nbsp;00865 – Substitution Cypher",
+                "q": "https://yuihuang.com/zj-e501/"
+            },
+            {
+                "num": "913",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d096",
+                "name": "d096.&nbsp;00913 – Joana and the Odd Numbers",
+                "q": "https://yuihuang.com/zj-d096/"
+            },
+            {
+                "num": "1225",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e528",
+                "name": "e528.&nbsp;01225 – Digit Counting",
+                "q": "https://yuihuang.com/zj-e528/"
+            },
+            {
+                "num": "1585",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e540",
+                "name": "e540.&nbsp;01585 – Score&nbsp;",
+                "q": "https://yuihuang.com/zj-e540/"
+            },
+            {
+                "num": "1587",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e534",
+                "name": "e534.&nbsp;01587 – Box",
+                "q": "https://yuihuang.com/zj-e534/"
+            },
+            {
+                "num": "10018",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c015",
+                "name": "c015.&nbsp;10018 – Reverse and Add",
+                "q": "https://yuihuang.com/zj-c015/"
+            },
+            {
+                "num": "10079",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c024",
+                "name": "c024.&nbsp;10079 – Pizza Cutting",
+                "q": "https://yuihuang.com/zj-c024/"
+            },
+            {
+                "num": "10082",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c054",
+                "name": "c054.&nbsp;10082 – WERTYU",
+                "q": "https://yuihuang.com/zj-c054/"
+            },
+            {
+                "num": "10126",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10126",
+                "name": "UVA-10126&nbsp;Zipf’s Law"
+            },
+            {
+                "num": "10156",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10156",
+                "name": "UVA-10156&nbsp;Sala-ma-Sond, A Nice Little Pond"
+            },
+            {
+                "num": "10188",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10188",
+                "name": "UVA-10188&nbsp;Automated Judge Script"
+            },
+            {
+                "num": "10191",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=f439",
+                "name": "f439:&nbsp;10191 – Longest Nap"
+            },
+            {
+                "num": "10209",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10209",
+                "name": "UVA-10209&nbsp;Is This Integration ?"
+            },
+            {
+                "num": "10215",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10215",
+                "name": "UVA-10215&nbsp;The Largest/Smallest Box …"
+            },
+            {
+                "num": "10229",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a451",
+                "name": "a451.&nbsp;10229 – Modular Fibonacci",
+                "q": "https://yuihuang.com/zj-a451/"
+            },
+            {
+                "num": "10257",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10257",
+                "name": "UVA-10257&nbsp;Dick and Jane"
+            },
+            {
+                "num": "10258",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10258",
+                "name": "UVA-10258&nbsp;Contest Scoreboard"
+            },
+            {
+                "num": "10260",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e641",
+                "name": "e641.&nbsp;10260 – Soundex",
+                "q": "https://yuihuang.com/zj-e641/"
+            },
+            {
+                "num": "10279",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10279",
+                "name": "https://vjudge.net/problem/UVA-10279"
+            },
+            {
+                "num": "10281",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10281",
+                "name": "https://vjudge.net/problem/UVA-10281"
+            },
+            {
+                "num": "10282",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10282",
+                "name": "https://vjudge.net/problem/UVA-10282"
+            },
+            {
+                "num": "10300",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c005",
+                "name": "c005.&nbsp;10300 – Ecological Premium",
+                "q": "https://yuihuang.com/zj-c005/"
+            },
+            {
+                "num": "10310",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10310",
+                "name": "https://vjudge.net/problem/UVA-10310"
+            },
+            {
+                "num": "10323",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10323",
+                "name": "https://vjudge.net/problem/UVA-10323"
+            },
+            {
+                "num": "10324",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e639",
+                "name": "e639.&nbsp;10324 – Zeros and Ones",
+                "q": "https://yuihuang.com/zj-e639/"
+            },
+            {
+                "num": "10326",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d437",
+                "name": "d437.&nbsp;10326 – The Polynomial Equation",
+                "q": "https://yuihuang.com/zj-d437/"
+            },
+            {
+                "num": "10328",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10328",
+                "name": "https://vjudge.net/problem/UVA-10328"
+            },
+            {
+                "num": "10340",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e624",
+                "name": "e624.&nbsp;10340 – All in All",
+                "q": "https://yuihuang.com/zj-e624/"
+            },
+            {
+                "num": "10346",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c079",
+                "name": "c079.&nbsp;10346 – Peter’s Smokes",
+                "q": "https://yuihuang.com/zj-c079/"
+            },
+            {
+                "num": "10370",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10370",
+                "name": "https://vjudge.net/problem/UVA-10370"
+            },
+            {
+                "num": "10393",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10393",
+                "name": "https://vjudge.net/problem/UVA-10393"
+            },
+            {
+                "num": "10424",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10424",
+                "name": "https://vjudge.net/problem/UVA-10424"
+            },
+            {
+                "num": "10443",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10443",
+                "name": "https://vjudge.net/problem/UVA-10443"
+            },
+            {
+                "num": "10469",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c222",
+                "name": "c222.&nbsp;10469 – To Carry or not to Carry",
+                "q": "https://yuihuang.com/zj-c222/"
+            },
+            {
+                "num": "10473",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c009",
+                "name": "c009.&nbsp;10473 – Simple Base Conversion",
+                "q": "https://yuihuang.com/zj-c009/"
+            },
+            {
+                "num": "10474",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e541",
+                "name": "e541.&nbsp;10474 – Where is the marble",
+                "q": "https://yuihuang.com/zj-e541/"
+            },
+            {
+                "num": "10487",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e536",
+                "name": "e536.&nbsp;10487 – Closest Sums",
+                "q": "https://yuihuang.com/zj-e536/"
+            },
+            {
+                "num": "10499",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d281",
+                "name": "d281.&nbsp;10499 – The Land of Justice",
+                "q": "https://yuihuang.com/zj-d281/"
+            },
+            {
+                "num": "10550",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c006",
+                "name": "c006.&nbsp;10550 – Combination Lock",
+                "q": "https://yuihuang.com/zj-c006/"
+            },
+            {
+                "num": "10573",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10573",
+                "name": "https://vjudge.net/problem/UVA-10573"
+            },
+            {
+                "num": "10585",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10585",
+                "name": "https://vjudge.net/problem/UVA-10585"
+            },
+            {
+                "num": "10591",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d442",
+                "name": "d442.&nbsp;10591 – Happy Number",
+                "q": "https://yuihuang.com/zj-d442/"
+            },
+            {
+                "num": "10633",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e519",
+                "name": "e519.&nbsp;10633 – Rare Easy Problem",
+                "q": "https://yuihuang.com/zj-e519/"
+            },
+            {
+                "num": "10678",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10678",
+                "name": "https://vjudge.net/problem/UVA-10678"
+            },
+            {
+                "num": "10696",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=c002",
+                "name": "c002.&nbsp;10696 – f91",
+                "q": "https://yuihuang.com/zj-c002/"
+            },
+            {
+                "num": "10699",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d120",
+                "name": "d120.&nbsp;10699 – Count the factors",
+                "q": "https://yuihuang.com/zj-d120/"
+            },
+            {
+                "num": "10703",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10703",
+                "name": "https://vjudge.net/problem/UVA-10703"
+            },
+            {
+                "num": "10714",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10714",
+                "name": "UVA-10714&nbsp;Ants",
+                "q": "https://yuihuang.com/uva-10714/"
+            },
+            {
+                "num": "10813",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e599",
+                "name": "e599.&nbsp;10813 – Traditional BINGO",
+                "q": "https://yuihuang.com/zj-e599/"
+            },
+            {
+                "num": "10879",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10879",
+                "name": "https://vjudge.net/problem/UVA-10879"
+            },
+            {
+                "num": "10903",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10903",
+                "name": "https://vjudge.net/problem/UVA-10903"
+            },
+            {
+                "num": "10919",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10919",
+                "name": "https://vjudge.net/problem/UVA-10919"
+            },
+            {
+                "num": "10925",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10925",
+                "name": "https://vjudge.net/problem/UVA-10925"
+            },
+            {
+                "num": "10935",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e155",
+                "name": "e155.&nbsp;10935 – Throwing cards away I",
+                "q": "https://yuihuang.com/zj-e155/"
+            },
+            {
+                "num": "10942",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10942",
+                "name": "https://vjudge.net/problem/UVA-10942"
+            },
+            {
+                "num": "10945",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10945",
+                "name": "https://vjudge.net/problem/UVA-10945"
+            },
+            {
+                "num": "10970",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d053",
+                "name": "d053.&nbsp;10970 – Big Chocolate",
+                "q": "https://yuihuang.com/zj-d053/"
+            },
+            {
+                "num": "10978",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10978",
+                "name": "https://vjudge.net/problem/UVA-10978"
+            },
+            {
+                "num": "10994",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-10994",
+                "name": "https://vjudge.net/problem/UVA-10994"
+            },
+            {
+                "num": "11000",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d261",
+                "name": "d261.&nbsp;11000 – Bee",
+                "q": "https://yuihuang.com/zj-d261/"
+            },
+            {
+                "num": "11001",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11001",
+                "name": "https://vjudge.net/problem/UVA-11001"
+            },
+            {
+                "num": "11034",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11034",
+                "name": "https://vjudge.net/problem/UVA-11034"
+            },
+            {
+                "num": "11042",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11042",
+                "name": "https://vjudge.net/problem/UVA-11042"
+            },
+            {
+                "num": "11044",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d039",
+                "name": "d039.&nbsp;11044 – Searching for Nessy",
+                "q": "https://yuihuang.com/zj-d039/"
+            },
+            {
+                "num": "11054",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e542",
+                "name": "e542.&nbsp;11054 – Wine trading in Gergovia",
+                "q": "https://yuihuang.com/zj-e542/"
+            },
+            {
+                "num": "11058",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11058",
+                "name": "https://vjudge.net/problem/UVA-11058"
+            },
+            {
+                "num": "11059",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=b917",
+                "name": "b917.&nbsp;11059 Maximum Product",
+                "q": "https://yuihuang.com/zj-b917/"
+            },
+            {
+                "num": "11172",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d143",
+                "name": "d143.&nbsp;11172 – Relational Operators",
+                "q": "https://yuihuang.com/zj-d143/"
+            },
+            {
+                "num": "11185",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d318",
+                "name": "d318.&nbsp;11185 – Ternary",
+                "q": "https://yuihuang.com/zj-d318/"
+            },
+            {
+                "num": "11192",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e267",
+                "name": "e267.&nbsp;11192 – Group Reverse",
+                "q": "https://yuihuang.com/zj-e267/"
+            },
+            {
+                "num": "11204",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11204",
+                "name": "https://vjudge.net/problem/UVA-11204"
+            },
+            {
+                "num": "11219",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d041",
+                "name": "d041.&nbsp;11219 – How old are you?",
+                "q": "https://yuihuang.com/zj-d041/"
+            },
+            {
+                "num": "11233",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e268",
+                "name": "e268.&nbsp;11233 – Deli Deli",
+                "q": "https://yuihuang.com/zj-e268/"
+            },
+            {
+                "num": "11309",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d048",
+                "name": "d048.&nbsp;11309 – Counting Chaos",
+                "q": "https://yuihuang.com/zj-d048/"
+            },
+            {
+                "num": "11313",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d258",
+                "name": "d258.&nbsp;11313 – Gourmet Games",
+                "q": "https://yuihuang.com/zj-d258/"
+            },
+            {
+                "num": "11342",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d188",
+                "name": "d188.&nbsp;11342 – Three-square",
+                "q": "https://yuihuang.com/zj-d188/"
+            },
+            {
+                "num": "11343",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11343",
+                "name": "https://vjudge.net/problem/UVA-11343"
+            },
+            {
+                "num": "11345",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11345",
+                "name": "https://vjudge.net/problem/UVA-11345"
+            },
+            {
+                "num": "11364",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e511",
+                "name": "e511.&nbsp;11364 – Parking",
+                "q": "https://yuihuang.com/zj-e511/"
+            },
+            {
+                "num": "11387",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11387",
+                "name": "https://vjudge.net/problem/UVA-11387"
+            },
+            {
+                "num": "11388",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d256",
+                "name": "d256.&nbsp;11388 – GCD LCM",
+                "q": "https://yuihuang.com/zj-d256/"
+            },
+            {
+                "num": "11389",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e538",
+                "name": "e538.&nbsp;11389 – The Bus Driver Problem",
+                "q": "https://yuihuang.com/zj-e538/"
+            },
+            {
+                "num": "11428",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11428",
+                "name": "https://vjudge.net/problem/UVA-11428"
+            },
+            {
+                "num": "11455",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d260",
+                "name": "d260.&nbsp;11455 – Behold my quadrangle&nbsp;",
+                "q": "https://yuihuang.com/zj-d260/"
+            },
+            {
+                "num": "11470",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11470",
+                "name": "https://vjudge.net/problem/UVA-11470"
+            },
+            {
+                "num": "11479",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d980",
+                "name": "d980.&nbsp;11479 – Is this the easiest problem?",
+                "q": "https://yuihuang.com/zj-d980/"
+            },
+            {
+                "num": "11482",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11482",
+                "name": "https://vjudge.net/problem/UVA-11482"
+            },
+            {
+                "num": "11483",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11483",
+                "name": "https://vjudge.net/problem/UVA-11483"
+            },
+            {
+                "num": "11494",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d057",
+                "name": "d057.&nbsp;11494 – Queen",
+                "q": "https://yuihuang.com/zj-d057/"
+            },
+            {
+                "num": "11498",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=f436",
+                "name": "f436:&nbsp;11498 – Division of Nlogonia"
+            },
+            {
+                "num": "11541",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e208",
+                "name": "e208.&nbsp;11541 – Decoding",
+                "q": "https://yuihuang.com/zj-e208/"
+            },
+            {
+                "num": "11547",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a521",
+                "name": "a521.&nbsp;12414 – Calculating Yuan Fen",
+                "q": "https://yuihuang.com/zj-a521/"
+            },
+            {
+                "num": "11597",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d656",
+                "name": "d656.&nbsp;11597 – Spanning Subtree",
+                "q": "https://yuihuang.com/zj-d656/"
+            },
+            {
+                "num": "11608",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d673",
+                "name": "d673.&nbsp;11608 – No Problem",
+                "q": "https://yuihuang.com/zj-d673/"
+            },
+            {
+                "num": "11621",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11621",
+                "name": "https://vjudge.net/problem/UVA-11621"
+            },
+            {
+                "num": "11634",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11634",
+                "name": "https://vjudge.net/problem/UVA-11634"
+            },
+            {
+                "num": "11636",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d658",
+                "name": "d658.&nbsp;11636 – Hello World!",
+                "q": "https://yuihuang.com/zj-d658/"
+            },
+            {
+                "num": "11639",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e568",
+                "name": "e568.&nbsp;11639 – Guard the Land",
+                "q": "https://yuihuang.com/zj-e568/"
+            },
+            {
+                "num": "11650",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11650",
+                "name": "https://vjudge.net/problem/UVA-11650"
+            },
+            {
+                "num": "11660",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11660",
+                "name": "https://vjudge.net/problem/UVA-11660"
+            },
+            {
+                "num": "11661",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e611",
+                "name": "e611.&nbsp;11661 – Burger Time",
+                "q": "https://yuihuang.com/zj-e611/"
+            },
+            {
+                "num": "11677",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d669",
+                "name": "d669.&nbsp;11677 – Alarm Clock",
+                "q": "https://yuihuang.com/zj-d669/"
+            },
+            {
+                "num": "11678",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e557",
+                "name": "e557.&nbsp;11678 – Cards’ Exchange",
+                "q": "https://yuihuang.com/zj-e557/"
+            },
+            {
+                "num": "11689",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a536",
+                "name": "a536.&nbsp;11689 – Soda Surpler",
+                "q": "https://yuihuang.com/zj-a536/"
+            },
+            {
+                "num": "11713",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e554",
+                "name": "e554.&nbsp;11713 – Abstract Names",
+                "q": "https://yuihuang.com/zj-e554/"
+            },
+            {
+                "num": "11716",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d671",
+                "name": "d671.&nbsp;11716 – Digital Fortress",
+                "q": "https://yuihuang.com/zj-d671/"
+            },
+            {
+                "num": "11727",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d659",
+                "name": "d659.&nbsp;11727 – Cost Cutting",
+                "q": "https://yuihuang.com/zj-d659/"
+            },
+            {
+                "num": "11728",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e629",
+                "name": "e629.&nbsp;11728 – Alternate Task",
+                "q": "https://yuihuang.com/zj-e629/"
+            },
+            {
+                "num": "11734",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a221",
+                "name": "a221.&nbsp;11734 – Big Number of Teams will Solve This",
+                "q": "https://yuihuang.com/zj-a221/"
+            },
+            {
+                "num": "11743",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a159",
+                "name": "a159.&nbsp;11743 – Credit Check",
+                "q": "https://yuihuang.com/zj-a159/"
+            },
+            {
+                "num": "11764",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=d660",
+                "name": "d660.&nbsp;11764 – Jumping Mario",
+                "q": "https://yuihuang.com/zj-d660/"
+            },
+            {
+                "num": "11777",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11777",
+                "name": "https://vjudge.net/problem/UVA-11777"
+            },
+            {
+                "num": "11799",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11799",
+                "name": "https://vjudge.net/problem/UVA-11799"
+            },
+            {
+                "num": "11824",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11824",
+                "name": "https://vjudge.net/problem/UVA-11824"
+            },
+            {
+                "num": "11827",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a158",
+                "name": "a158.&nbsp;11827 – Maximum GCD",
+                "q": "https://yuihuang.com/zj-a158/"
+            },
+            {
+                "num": "11830",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e662",
+                "name": "e662.&nbsp;11830 – Contract Revision",
+                "q": "https://yuihuang.com/zj-e662/"
+            },
+            {
+                "num": "11854",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11854",
+                "name": "https://vjudge.net/problem/UVA-11854"
+            },
+            {
+                "num": "11875",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e661",
+                "name": "e661.&nbsp;11875 – Brick Game",
+                "q": "https://yuihuang.com/zj-e661/"
+            },
+            {
+                "num": "11900",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11900",
+                "name": "UVA-11900&nbsp;Boiled Eggs",
+                "q": "https://yuihuang.com/uva-11900/"
+            },
+            {
+                "num": "11909",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11909",
+                "name": "https://vjudge.net/problem/UVA-11909"
+            },
+            {
+                "num": "11917",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e508",
+                "name": "e508.&nbsp;11917 – Do Your Own Homework!&nbsp;",
+                "q": "https://yuihuang.com/zj-e508/"
+            },
+            {
+                "num": "11933",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11933",
+                "name": "https://vjudge.net/problem/UVA-11933"
+            },
+            {
+                "num": "11934",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11934",
+                "name": "https://vjudge.net/problem/UVA-11934"
+            },
+            {
+                "num": "11936",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e614",
+                "name": "e614.&nbsp;11936 – The Lazy Lumberjacks",
+                "q": "https://yuihuang.com/zj-e614/"
+            },
+            {
+                "num": "11942",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e533",
+                "name": "e533.&nbsp;11942 – Lumberjack Sequencing",
+                "q": "https://yuihuang.com/zj-e533/"
+            },
+            {
+                "num": "11945",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-11945",
+                "name": "https://vjudge.net/problem/UVA-11945"
+            },
+            {
+                "num": "11946",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=j010",
+                "name": "j010:&nbsp;11946 – Code Number",
+                "q": "https://yuihuang.com/zj-j010/"
+            },
+            {
+                "num": "11965",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=j011",
+                "name": "j011:&nbsp;11965 – Extra Spaces",
+                "q": "https://yuihuang.com/zj-j011/"
+            },
+            {
+                "num": "11984",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=i921",
+                "name": "i921:&nbsp;11984 – A Change in Thermal Unit",
+                "q": "https://yuihuang.com/zj-i921/"
+            },
+            {
+                "num": "11988",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=i524",
+                "name": "i524:&nbsp;11988: Broken Keyboard (a.k.a. Beiju Text)"
+            },
+            {
+                "num": "12136",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=i920",
+                "name": "i920:&nbsp;12136 – Schedule of a Married Man",
+                "q": "https://yuihuang.com/zj-i920/"
+            },
+            {
+                "num": "12149",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a111",
+                "name": "a111.&nbsp;12149 – Feynman",
+                "q": "https://yuihuang.com/zj-a111/"
+            },
+            {
+                "num": "12195",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e504",
+                "name": "e504.&nbsp;12195 – Jingle Composing",
+                "q": "https://yuihuang.com/zj-e504/"
+            },
+            {
+                "num": "12289",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a466",
+                "name": "a466.&nbsp;12289 – One-Two-Three",
+                "q": "https://yuihuang.com/zj-a466/"
+            },
+            {
+                "num": "12372",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=i919",
+                "name": "i919:&nbsp;12372 – Packing for Holiday",
+                "q": "https://yuihuang.com/zj-i919/"
+            },
+            {
+                "num": "12403",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=i863",
+                "name": "i863:&nbsp;12403 – Save Setu"
+            },
+            {
+                "num": "12405",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a465",
+                "name": "a465.&nbsp;12405 – Scarecrow",
+                "q": "https://yuihuang.com/zj-a465/"
+            },
+            {
+                "num": "12416",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a520",
+                "name": "a520.&nbsp;12416 – Excessive Space Remover",
+                "q": "https://yuihuang.com/zj-a520/"
+            },
+            {
+                "num": "12439",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a468",
+                "name": "a468.&nbsp;12439 – February 29",
+                "q": "https://yuihuang.com/zj-a468/"
+            },
+            {
+                "num": "12468",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=a518",
+                "name": "a518.&nbsp;12468 – Zapping",
+                "q": "https://yuihuang.com/zj-a518/"
+            },
+            {
+                "num": "12478",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-12478",
+                "name": "https://vjudge.net/problem/UVA-12478"
+            },
+            {
+                "num": "12503",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e567",
+                "name": "e567.&nbsp;12503 – Robot Instructions",
+                "q": "https://yuihuang.com/zj-e567/"
+            },
+            {
+                "num": "12578",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-12578",
+                "name": "https://vjudge.net/problem/UVA-12578"
+            },
+            {
+                "num": "12602",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e505",
+                "name": "e505.&nbsp;12602 – Nice Licence Plates",
+                "q": "https://yuihuang.com/zj-e505/"
+            },
+            {
+                "num": "12611",
+                "type": "1",
+                "url": "https://vjudge.net/problem/UVA-12611",
+                "name": "https://vjudge.net/problem/UVA-12611"
+            },
+            {
+                "num": "12626",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=i918",
+                "name": "i918:&nbsp;12626 – I ❤ Pizza",
+                "q": "https://yuihuang.com/zj-i918/"
+            },
+            {
+                "num": "12640",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=i917",
+                "name": "i917:&nbsp;12640 – Largest Sum Game",
+                "q": "https://yuihuang.com/zj-i917/"
+            },
+            {
+                "num": "12650",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e546",
+                "name": "e546.&nbsp;12650 – Dangerous Dive",
+                "q": "https://yuihuang.com/zj-e546/"
+            },
+            {
+                "num": "13190",
+                "type": "1",
+                "url": "https://zerojudge.tw/ShowProblem?problemid=e520",
+                "name": "e520.&nbsp;13190 – Rockabye Tobby",
+                "q": "https://yuihuang.com/zj-e520/"
+            }
+        ];
+        $(document).ready(function () {
+            // Generate random index
+            let i = 0;
+            function lottery() {
+                var randomIndex = Math.floor(Math.random() * questions.length);
+
+                while (true) {
+                    console.log(randomIndex);
+                    if (localStorage.getItem('question' + randomIndex) == null) {
+                        break;
+                    }
+                    if (i > 220 ) {
+                        alert("您可能完成全部");
+                        break;
+                    }
+                    randomIndex = Math.floor(Math.random() * questions.length);
+                }  
+
+                localStorage.setItem('questions' + randomIndex, randomIndex);
+
+                // Get random item
+                var randomItem = questions[randomIndex];
+
+                // Construct HTML to display the random item
+                var html = '';
+                html += '<p>編號: ' + randomItem.num + '</p>';
+                html += '<p>星等: ' + randomItem.type + '</p>';
+                html += '<p>題目: <a href="' + randomItem.url + '">' + randomItem.name + '</a></p>';
+                if (randomItem.q) {
+                    html += '<p>題解: <a href="' + randomItem.q + '">' + randomItem.q + '</a></p>';
+                }
+
+                $('#randomItem').html(html);
+            }
+
+            $(document).on('click', 'button', function () {
+                lottery();
+            });
+
+            lottery();
+
+        });
+    </script>
+</body>
+
+</html>
